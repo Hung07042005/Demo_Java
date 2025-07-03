@@ -36,7 +36,14 @@
                         <a class="nav-link" th:href="@{/students}" sec:authorize="hasAnyRole('ADMIN', 'MANAGER', 'NURSE')">Manage Students</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/medical-records/student/1}" sec:authorize="hasAnyRole('ADMIN', 'MANAGER', 'NURSE', 'PARENT')">Medical Records</a>
+                        <a class="nav-link" th:href="@{/students/my-children}" sec:authorize="hasRole('PARENT')">Khai báo hồ sơ sức khỏe</a>
+                        <a class="nav-link" th:href="@{/medical-records/student/1}" sec:authorize="hasAnyRole('ADMIN', 'MANAGER', 'NURSE')">Medical Records</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/create-parent}">Tạo phụ huynh</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/create-student}">Tạo học sinh</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" th:href="@{/logout}">Logout</a>
@@ -73,7 +80,14 @@
                             <a th:href="@{/students}" class="btn btn-link">Manage Students</a>
                         </li>
                         <li class="list-group-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER', 'NURSE', 'PARENT')">
-                            <a th:href="@{/medical-records/student/1}" class="btn btn-link">Medical Records</a>
+                            <a th:href="@{/students/my-children}" class="btn btn-link" sec:authorize="hasRole('PARENT')">Khai báo hồ sơ sức khỏe</a>
+                            <a th:href="@{/medical-records/student/1}" class="btn btn-link" sec:authorize="hasAnyRole('ADMIN', 'MANAGER', 'NURSE')">Medical Records</a>
+                        </li>
+                        <li class="list-group-item" sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/admin/create-parent}" class="btn btn-link">Tạo tài khoản phụ huynh</a>
+                        </li>
+                        <li class="list-group-item" sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/admin/create-student}" class="btn btn-link">Tạo tài khoản học sinh</a>
                         </li>
                         <li class="list-group-item">
                             <a href="#" class="btn btn-link disabled">Manage Medications (Coming Soon)</a>

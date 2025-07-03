@@ -5,6 +5,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 import java.time.LocalDate;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import com.example.demo.model.Parent;
 
 @Entity
 @Table(name = "students")
@@ -16,6 +19,10 @@ public class Student extends User { // Kế thừa từ User
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private MedicalRecord medicalRecord; // Mỗi học sinh có một hồ sơ sức khỏe
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
 
     // Constructors
     public Student() {
@@ -63,5 +70,13 @@ public class Student extends User { // Kế thừa từ User
         if (medicalRecord != null) {
             medicalRecord.setStudent(this);
         }
+    }
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
     }
 }

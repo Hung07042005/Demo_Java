@@ -2,8 +2,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.MedicalRecordDTO;
+import com.example.demo.dto.VaccinationDTO;
 import com.example.demo.model.MedicalRecord;
 import com.example.demo.model.Student;
+import com.example.demo.model.Vaccination;
 import com.example.demo.service.MedicalRecordService;
 import com.example.demo.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,12 +56,25 @@ public class MedicalRecordController {
                 record.getVisionRight(),
                 record.getHearingStatus()
             );
+            // Ánh xạ danh sách tiêm chủng sang DTO
+            if (record.getVaccinations() != null) {
+                java.util.List<VaccinationDTO> vaccinationDTOs = new java.util.ArrayList<>();
+                for (Vaccination v : record.getVaccinations()) {
+                    VaccinationDTO dto = new VaccinationDTO();
+                    dto.setVaccineName(v.getVaccineName());
+                    dto.setVaccinationDate(v.getVaccinationDate());
+                    dto.setNotes(v.getNotes());
+                    vaccinationDTOs.add(dto);
+                }
+                medicalRecordDTO.setVaccinations(vaccinationDTOs);
+            }
         } else {
             // Nếu chưa có, tạo DTO rỗng với studentId
             medicalRecordDTO = new MedicalRecordDTO();
             medicalRecordDTO.setStudentId(studentId);
             medicalRecordDTO.setAllergies(new ArrayList<>()); // Khởi tạo list rỗng
             medicalRecordDTO.setChronicConditions(new ArrayList<>()); // Khởi tạo list rỗng
+            medicalRecordDTO.setVaccinations(new ArrayList<>()); // Khởi tạo list rỗng
         }
         model.addAttribute("medicalRecord", medicalRecordDTO);
         return "medical-record-form"; // Trả về template medical-record-form.html

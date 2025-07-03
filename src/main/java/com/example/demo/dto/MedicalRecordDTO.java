@@ -2,6 +2,8 @@
 package com.example.demo.dto;
 
 import java.util.List;
+import java.util.ArrayList;
+import com.example.demo.dto.VaccinationDTO;
 
 public class MedicalRecordDTO {
     private Long id; // ID của MedicalRecord (null khi tạo mới)
@@ -12,6 +14,7 @@ public class MedicalRecordDTO {
     private Double visionLeft;
     private Double visionRight;
     private String hearingStatus;
+    private List<VaccinationDTO> vaccinations = new ArrayList<>();
 
     // Constructors
     public MedicalRecordDTO() {}
@@ -46,8 +49,9 @@ public class MedicalRecordDTO {
 
     public List<String> getAllergies() {
         return allergies;
-}
-public void setAllergies(List<String> allergies) {
+    }
+
+    public void setAllergies(List<String> allergies) {
         this.allergies = allergies;
     }
 
@@ -89,5 +93,13 @@ public void setAllergies(List<String> allergies) {
 
     public void setHearingStatus(String hearingStatus) {
         this.hearingStatus = hearingStatus;
+    }
+
+    public List<VaccinationDTO> getVaccinations() {
+        return vaccinations;
+    }
+
+    public void setVaccinations(List<VaccinationDTO> vaccinations) {
+        this.vaccinations = vaccinations;
     }
 }

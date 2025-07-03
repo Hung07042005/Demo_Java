@@ -56,7 +56,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/css/**", "/js/**", "/images/**").permitAll() // Cho phép truy cập tài nguyên tĩnh và trang chủ
-                .requestMatchers("/students/**").hasAnyRole("ADMIN", "MANAGER", "NURSE") // Chỉ admin, manager, nurse được quản lý học sinh
+                .requestMatchers("/students/**").hasAnyRole("ADMIN", "MANAGER", "NURSE", "PARENT") // Chỉ admin, manager, nurse được quản lý học sinh
                 .requestMatchers("/medical-records/**").hasAnyRole("ADMIN", "MANAGER", "NURSE", "PARENT") // Cha mẹ cũng có thể quản lý hồ sơ
                 .anyRequest().authenticated() // Tất cả các request khác yêu cầu xác thực
             )

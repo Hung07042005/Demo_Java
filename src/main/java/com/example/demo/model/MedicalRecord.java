@@ -34,6 +34,10 @@ public class MedicalRecord {
     private Double visionRight; // Thị lực mắt phải
     private String hearingStatus; // Tình trạng thính lực (ví dụ: "Bình thường", "Giảm nhẹ")
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "vaccinations", joinColumns = @JoinColumn(name = "medical_record_id"))
+    private List<Vaccination> vaccinations = new ArrayList<>(); // Danh sách tiêm chủng
+
     private LocalDateTime lastUpdated;
 
     @PreUpdate
@@ -118,6 +122,14 @@ public class MedicalRecord {
 
     public void setHearingStatus(String hearingStatus) {
         this.hearingStatus = hearingStatus;
+    }
+
+    public List<Vaccination> getVaccinations() {
+        return vaccinations;
+    }
+
+    public void setVaccinations(List<Vaccination> vaccinations) {
+        this.vaccinations = vaccinations;
     }
 
     public LocalDateTime getLastUpdated() {

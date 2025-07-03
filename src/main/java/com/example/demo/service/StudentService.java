@@ -6,14 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import com.example.demo.dto.StudentDTO; // Import StudentDTO
+import com.example.demo.repository.ParentRepository;
+import com.example.demo.model.Parent;
 
 @Service
 public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private ParentRepository parentRepository;
 
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
@@ -61,4 +67,16 @@ public class StudentService {
 
     // TODO: Trong thực tế, cần thêm logic kiểm tra trùng lặp username, studentId
     // TODO: Xử lý mật khẩu một cách an toàn (ví dụ: dùng BcryptPasswordEncoder)
+
+    public List<Student> getStudentsByParentUsername(String username) {
+        Parent parent = parentRepository.findByUsername(username);
+        if (parent == null) return new ArrayList<>();
+        return studentRepository.findAll().stream()
+            .filter(s -> s.getParent() != null && s.getParent().getId().equals(parent.getId()))
+            .collect(java.util.stream.Collectors.toList());
+    }
+
+    public Student getStudentByIdRaw(Long id) {
+        return studentRepository.findById(id).orElse(null);
+    }
 }

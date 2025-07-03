@@ -8,6 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*; // Import tất cả các annotation cần thiết
 import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Để gửi thông báo sau redirect
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.demo.service.HealthStatusReportService;
+import com.example.demo.dto.HealthStatusReportDTO;
+import java.time.LocalDate;
 
 import java.util.List;
 
@@ -17,6 +22,9 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private HealthStatusReportService healthStatusReportService;
 
     // --- Chức năng Hiển thị Danh sách ---
     @GetMapping
@@ -85,6 +93,43 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
         }
         return "redirect:/students"; // Chuyển hướng về trang danh sách
+    }
+
+    // Hiển thị danh sách học sinh của phụ huynh
+    @GetMapping("/my-children")
+    public String myChildren(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        List<Student> children = studentService.getStudentsByParentUsername(username);
+        model.addAttribute("children", children);
+        return "my-children";
+    }
+
+    // Form khai báo tình trạng sức khỏe
+    @GetMapping("/health-status/{studentId}")
+    public String healthStatusForm(@PathVariable Long studentId, Model model) {
+        HealthStatusReportDTO dto = new HealthStatusReportDTO();
+        dto.setStudentId(studentId);
+        dto.setReportDate(LocalDate.now());
+        model.addAttribute("report", dto);
+        model.addAttribute("student", studentService.getStudentByIdRaw(studentId));
+        return "health-status-form";
+    }
+
+    // Xử lý submit khai báo
+    @PostMapping("/health-status")
+    public String submitHealthStatus(@ModelAttribute("report") HealthStatusReportDTO dto, RedirectAttributes redirectAttributes) {
+        healthStatusReportService.saveReport(dto);
+        redirectAttributes.addFlashAttribute("message", "Khai báo thành công!");
+        return "redirect:/students/health-status/history/" + dto.getStudentId();
+    }
+
+    // Xem lịch sử khai báo
+    @GetMapping("/health-status/history/{studentId}")
+    public String healthStatusHistory(@PathVariable Long studentId, Model model) {
+        model.addAttribute("reports", healthStatusReportService.getReportsByStudentId(studentId));
+        model.addAttribute("student", studentService.getStudentByIdRaw(studentId));
+        return "health-status-history";
     }
 
     // Bạn có thể giữ lại HelloController cũ nếu muốn, hoặc bỏ đi

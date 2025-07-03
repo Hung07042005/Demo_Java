@@ -5,11 +5,14 @@ import com.example.demo.model.Student;
 import com.example.demo.repository.MedicalRecordRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.dto.MedicalRecordDTO; // Đảm bảo dòng này có và đúng
+import com.example.demo.dto.VaccinationDTO;
+import com.example.demo.model.Vaccination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicalRecordService {
@@ -64,6 +67,20 @@ public class MedicalRecordService {
         medicalRecord.setVisionLeft(medicalRecordDTO.getVisionLeft());
         medicalRecord.setVisionRight(medicalRecordDTO.getVisionRight());
         medicalRecord.setHearingStatus(medicalRecordDTO.getHearingStatus());
+        // Ánh xạ danh sách tiêm chủng
+        if (medicalRecordDTO.getVaccinations() != null) {
+            medicalRecord.setVaccinations(
+                medicalRecordDTO.getVaccinations().stream().map(dto -> {
+                    Vaccination v = new Vaccination();
+                    v.setVaccineName(dto.getVaccineName());
+                    v.setVaccinationDate(dto.getVaccinationDate());
+                    v.setNotes(dto.getNotes());
+                    return v;
+                }).collect(Collectors.toList())
+            );
+        } else {
+            medicalRecord.setVaccinations(new java.util.ArrayList<>());
+        }
 
         return medicalRecordRepository.save(medicalRecord);
     }
